@@ -11,8 +11,7 @@ import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  // ds
-  // hello world
+
   // const accessToken = useAuthStore((state) => state.accessToken);
   const user = useAuthStore((state) => state.user);
 
@@ -29,13 +28,14 @@ export default function Header() {
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-6 items-center">
-          {navLinks.map((link) => (
+          {navLinks.map(({ href, label, icon: Icon }) => (
             <Link
-              key={link.href}
-              href={link.href}
-              className="hover:text-blue-500 dark:hover:text-blue-300"
+              key={href}
+              href={href}
+              className="hover:text-blue-500 dark:hover:text-blue-300 flex flex-col items-center justify-center"
             >
-              {link.label}
+              <Icon className="h-5 w-5" />
+              {label}
             </Link>
           ))}
           {user ? (
