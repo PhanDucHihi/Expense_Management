@@ -1,0 +1,172 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { WalletService } from 'src/wallet/wallet.service';
+import { CategoryService } from 'src/category/category.service';
+
+@Injectable()
+export class TransactionService {
+  constructor(
+    private prisma: PrismaService,
+    private walletService: WalletService,
+    private categoryService: CategoryService,
+  ) {}
+
+  async create(userId: number, createTransactionDto: CreateTransactionDto) {
+    const wallet = await this.walletService.findOne(
+      userId,
+      createTransactionDto.walletId,
+    );
+
+    const category = await this.categoryService.findOne(
+      createTransactionDto.categoryId,
+    );
+
+    const transaction = await this.prisma.transaction.create({
+      data: {
+        amount: createTransactionDto.amount,
+        type: createTransactionDto.type,
+        transaction_date: new Date(createTransactionDto.transaction_date),
+        note: createTransactionDto.note,
+        categoryId: createTransactionDto.categoryId,
+        walletId: createTransactionDto.walletId,
+        userId,
+      },
+    });
+
+    // cập nhật balance nếu là basis
+    let newBalance: number = 0;
+    if (category?.type === 'EXPENSE') {
+      newBalance = wallet.balance.toNumber() - createTransactionDto.amount;
+    } else if (category?.type === 'INCOME') {
+      newBalance = wallet.balance.toNumber() + createTransactionDto.amount;
+    }
+    await this.walletService.update(userId, wallet.id, {
+      balance: newBalance,
+    });
+
+    return transaction;
+  }
+
+  async findRecentTransactions(userId: number) {
+    // const whereClause: any = { userId };
+    const recentTransactions = await this.prisma.transaction.findMany({
+      where: {
+        userId,
+      },
+      orderBy: { transaction_date: 'desc' },
+      take: 3,
+      include: {
+        wallet: true,
+        category: true,
+      },
+    });
+
+    return recentTransactions;
+  }
+
+  async findByWallet(userId: number, walletId: number) {
+    return this.prisma.transaction.findMany({
+      where: {
+        userId,
+        walletId,
+      },
+    });
+  }
+
+  async findByMonth(
+    userId: number,
+    walletId: number,
+    year: number,
+    month: number,
+  ) {
+    const startDate = new Date(year, month - 1, 1); // đầu tháng
+    const endDate = new Date(year, month, 1); // đầu tháng tiếp theo
+
+    const transactions = await this.prisma.transaction.findMany({
+      where: {
+        userId,
+        walletId,
+        transaction_date: { gte: startDate, lt: endDate },
+      },
+      orderBy: { transaction_date: 'asc' },
+      include: { wallet: true, category: true },
+    });
+
+    const grouped: Record<string, typeof transactions> = {};
+    transactions.forEach((tx) => {
+      const day = tx.transaction_date.toISOString().slice(0, 10);
+      if (!grouped[day]) grouped[day] = [];
+      grouped[day].push(tx);
+    });
+
+    return grouped;
+  }
+
+  findAll() {
+    return `This action returns all transaction`;
+  }
+
+  async findOne(userId: number, transactionId: number) {
+    const transaction = await this.prisma.transaction.findFirst({
+      where: {
+        id: transactionId,
+        userId, // chỉ lấy transaction của user hiện tại
+      },
+      include: { wallet: true, category: true },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException(
+        `Transaction with id ${transactionId} not found`,
+      );
+    }
+
+    return transaction;
+  }
+
+  update(id: number, updateTransactionDto: UpdateTransactionDto) {
+    return `This action updates a #${id} transaction`;
+  }
+
+  async remove(userId: number, transactionId: number) {
+    // Kiểm tra transaction có thuộc user không
+    const transaction = await this.prisma.transaction.findFirst({
+      where: {
+        id: transactionId,
+        userId,
+      },
+      include: { category: true },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException(
+        `Transaction with id ${transactionId} not found`,
+      );
+    }
+
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { id: transaction.walletId },
+    });
+
+    if (!wallet) throw new NotFoundException('Wallet not found');
+
+    let newBalance = wallet.balance.toNumber();
+    const amount = transaction.amount.toNumber(); // chuyển Decimal -> number
+
+    if (transaction.category.type === 'EXPENSE') {
+      newBalance += amount; // OK
+    } else if (transaction.category.type === 'INCOME') {
+      newBalance -= amount; // OK
+    }
+
+    await this.walletService.update(userId, wallet.id, {
+      balance: newBalance,
+    });
+
+    await this.prisma.transaction.delete({ where: { id: transactionId } });
+
+    return { message: 'Transaction deleted successfully', balance: newBalance };
+  }
+}

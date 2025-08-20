@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator class_validator {
+  provider = "prisma-class-validator-generator"
+  output   = "../src/generated"  
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  password String
+  imageUrl String @default("/images/defaultAvatar.jpg")
+  role Role @default(USER)
+
+  categories Category[]
+  wallets Wallet[]
+  transactions Transaction[]
+  budgets Budget[]
+  recurringTransactions RecurringTransaction[]
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+enum Role {
+  USER 
+  ADMIN
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @unique
+  type CategoryType @default(EXPENSE)
+  icon String
+  parentId Int?
+  parent Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  user User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  budgets Budget[]
+  recurringTransactions  RecurringTransaction[]
+  transactions Transaction[]
+}
+
+enum CategoryType {
+  EXPENSE
+  INCOME
+}
+
+model Wallet {
+  id Int @id @default(autoincrement())
+  name String
+  type Wallettype @default(BASIS)
+  balance Decimal @default(0) @db.Decimal(15,2)
+  startAmount Decimal? @db.Decimal(15,2)
+  targetAmount Decimal? @db.Decimal(15,2)
+  deadline DateTime? 
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+   @@unique([name, userId])  // để mỗi user không có 2 ví trùng tên
+
+  transactions Transaction[]
+  budgets Budget[]
+  recurringTransactions  RecurringTransaction[]
+}
+
+enum Wallettype {
+  BASIS
+  GOAL
+}
+
+model Transaction {
+  id Int @id @default(autoincrement())
+  amount Decimal @default(0) @db.Decimal(15,2)
+  type TransactionType @default(EXPENSE)
+  transaction_date DateTime @default(now())
+  note String?
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  walletId Int
+
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFer
+}
+
+model Budget {
+  id Int @id @default(autoincrement())
+  amount_limit Decimal @db.Decimal(15,2)
+  start_date DateTime
+  end_date DateTime
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  walletId Int
+}
+
+model RecurringTransaction {
+  id Int @id @default(autoincrement())
+  amount Decimal @db.Decimal(15,2)
+  frequency RecurringTransactionType @default(DAILY)
+  next_run_date DateTime
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  walletId Int
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+}
+
+enum RecurringTransactionType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+
+
+
