@@ -84,6 +84,7 @@ export class TransactionService {
     const startDate = new Date(year, month - 1, 1); // đầu tháng
     const endDate = new Date(year, month, 1); // đầu tháng tiếp theo
 
+    // Lấy tất cả transaction trong tháng
     const transactions = await this.prisma.transaction.findMany({
       where: {
         userId,
@@ -94,14 +95,8 @@ export class TransactionService {
       include: { wallet: true, category: true },
     });
 
-    const grouped: Record<string, typeof transactions> = {};
-    transactions.forEach((tx) => {
-      const day = tx.transaction_date.toISOString().slice(0, 10);
-      if (!grouped[day]) grouped[day] = [];
-      grouped[day].push(tx);
-    });
-
-    return grouped;
+    // Trả về trực tiếp mảng transaction
+    return transactions;
   }
 
   async getMonthlySpent(userId: number, year: number, month: number) {
@@ -129,6 +124,10 @@ export class TransactionService {
     return this.prisma.transaction.findMany({
       where: {
         userId,
+      },
+      include: {
+        wallet: true,
+        category: true,
       },
     });
   }

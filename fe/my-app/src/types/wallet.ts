@@ -10,6 +10,6 @@ export type Wallet = {
 };
 
 export enum WalletType {
-  BASIS,
-  GOAL,
+  BASIS = "BASIS",
+  GOAL = "GOAL",
 }

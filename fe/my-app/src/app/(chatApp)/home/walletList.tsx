@@ -1,9 +1,11 @@
 "use client";
 
 import { apiPrivate } from "@/lib/api";
-import { Wallet } from "@/types/wallet";
+import { useWalletStore } from "@/store/walletStore";
+import { Wallet, WalletType } from "@/types/wallet";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function WalletList() {
   const { data: wallets } = useQuery<Wallet[]>({
@@ -14,6 +16,21 @@ export default function WalletList() {
       return res.data;
     },
   });
+
+  const setCurrentWallet = useWalletStore((state) => state.setCurrentWallet);
+
+  useEffect(() => {
+    if (wallets && wallets.length > 0) {
+      console.log("hello");
+
+      const basisWallet = wallets.find((w) => w.type === WalletType.BASIS);
+      console.log(basisWallet, "hererree");
+
+      if (basisWallet) {
+        setCurrentWallet(basisWallet);
+      }
+    }
+  }, [wallets, setCurrentWallet]);
 
   return (
     <div className="space-y-4 w-full">
