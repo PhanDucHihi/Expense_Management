@@ -104,8 +104,85 @@ export class TransactionService {
     return grouped;
   }
 
-  findAll() {
-    return `This action returns all transaction`;
+  async getMonthlySpent(userId: number, year: number, month: number) {
+    const startDate = new Date(year, month - 1, 1); // đầu tháng
+    const endDate = new Date(year, month, 1); // đầu tháng tiếp theo
+
+    const transactions = await this.prisma.transaction.findMany({
+      where: {
+        userId,
+        transaction_date: { gte: startDate, lt: endDate },
+        category: { type: 'EXPENSE' },
+      },
+    });
+
+    // Tổng chi tiêu
+    const totalSpent = transactions.reduce(
+      (sum, tx) => sum + tx.amount.toNumber(), // nếu dùng Decimal
+      0,
+    );
+
+    return totalSpent;
+  }
+
+  findAll(userId: number) {
+    return this.prisma.transaction.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
+
+  async getTopSpending(userId: number) {
+    // Lấy tất cả EXPENSE của user
+    const expenses = await this.prisma.transaction.groupBy({
+      by: ['categoryId'],
+      where: {
+        userId,
+        type: 'EXPENSE',
+      },
+      _sum: {
+        amount: true,
+      },
+      orderBy: {
+        _sum: {
+          amount: 'desc',
+        },
+      },
+      take: 3, // chỉ lấy top 3
+    });
+
+    const normalized = expenses.map((e) => ({
+      categoryId: e.categoryId,
+      total: e._sum.amount ? e._sum.amount.toNumber() : 0,
+    }));
+
+    const totalExpense = normalized.reduce((acc, e) => acc + e.total, 0);
+    // 2. Lấy thông tin category
+    const categories = await this.prisma.category.findMany({
+      where: {
+        id: { in: normalized.map((e) => e.categoryId) },
+      },
+      select: {
+        id: true,
+        name: true,
+        icon: true,
+      },
+    });
+
+    return normalized.map((e) => {
+      const category = categories.find((c) => c.id === e.categoryId);
+      return {
+        categoryId: e.categoryId,
+        category: category
+          ? { name: category.name, icon: category.icon }
+          : null,
+        total: e.total,
+        percentage: totalExpense
+          ? Math.round((e.total / totalExpense) * 100)
+          : 0,
+      };
+    });
   }
 
   async findOne(userId: number, transactionId: number) {

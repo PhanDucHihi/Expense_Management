@@ -27,15 +27,15 @@ export class AuthService {
     }
 
     const payload = {
-      sub: foundUser!.id,
-      username: foundUser!.name,
-      role: foundUser!.role,
+      sub: foundUser.id,
+      username: foundUser.name,
+      role: foundUser.role,
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
     const refreshToken = await this.jwtService.signAsync(
       {
-        sub: foundUser!.id,
+        sub: foundUser.id,
       },
       {
         secret: this.config.get<string>('JWT_REFRESH_SECRET'),
@@ -50,7 +50,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+  async refreshToken(refreshToken: string): Promise<any> {
     try {
       const payload: JwtPayload = await this.jwtService.verifyAsync(
         refreshToken,
@@ -67,7 +67,7 @@ export class AuthService {
         role: user.role,
       });
 
-      return { accessToken: newAccessToken };
+      return { accessToken: newAccessToken, user };
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }

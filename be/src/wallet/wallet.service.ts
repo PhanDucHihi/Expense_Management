@@ -27,8 +27,13 @@ export class WalletService {
     return `This action returns all wallet`;
   }
 
-  findAll() {
-    return `This action returns all wallet`;
+  async findAll(userId: number) {
+    const wallet = await this.prisma.wallet.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+    return wallet;
   }
 
   async findOne(userId: number, walletId: number) {

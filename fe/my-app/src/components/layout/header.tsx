@@ -16,7 +16,7 @@ export default function Header() {
   const user = useAuthStore((state) => state.user);
 
   return (
-    <header className="bg-white shadow-md dark:bg-gray-900">
+    <header className="bg-white shadow-md dark:bg-gray-900 mb-5">
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo */}
         <Link
@@ -38,22 +38,14 @@ export default function Header() {
               {label}
             </Link>
           ))}
-          {user ? (
-            <Image
-              src={user.imageUrl ?? "/default-avatar.png"}
-              alt={user.name ?? "User avatar"}
-              width={50}
-              height={50}
-              className="object-cover rounded-full"
-            />
-          ) : (
-            <Link
-              href="/login"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            >
-              Sign In
-            </Link>
-          )}
+
+          <Image
+            src={user?.imageUrl ?? "/images/default-avatar.png"}
+            alt={user?.name ?? "User avatar"}
+            width={50}
+            height={50}
+            className="object-cover rounded-full"
+          />
 
           <ModeToggle />
         </nav>

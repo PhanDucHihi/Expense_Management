@@ -31,8 +31,8 @@ export class WalletController {
   }
 
   @Get()
-  findAll() {
-    return this.walletService.findAll();
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.walletService.findAll(req.user.sub);
   }
 
   @Get(':id')

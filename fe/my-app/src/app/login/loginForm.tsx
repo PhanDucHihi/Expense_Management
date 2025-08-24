@@ -27,8 +27,11 @@ export default function LoginForm() {
     const checkAuth = async () => {
       try {
         const res = await api.post("/auth/refresh-token");
+        console.log(res);
+
         if (res.data.accessToken) {
           setAccessToken(res.data.accessToken);
+          setUser(res.data.user);
           router.push("/home");
         }
       } catch {

@@ -35,8 +35,8 @@ export class TransactionController {
   }
 
   @Get()
-  findAll() {
-    return this.transactionService.findAll();
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.transactionService.findAll(req.user.sub);
   }
 
   @Get('wallet/:walletId')
@@ -48,6 +48,34 @@ export class TransactionController {
   ) {
     const userId = req.user.sub;
     return this.transactionService.findByMonth(userId, walletId, year, month);
+  }
+
+  @Get('top-spending')
+  getTopSpending(@Req() req: AuthenticatedRequest) {
+    return this.transactionService.getTopSpending(req.user.sub);
+  }
+
+  @Get('reportMonth')
+  async getReport(@Req() req: AuthenticatedRequest) {
+    const userId = req.user.sub;
+    const now = new Date();
+
+    // Tháng này
+    const spentThisMonth = await this.transactionService.getMonthlySpent(
+      userId,
+      now.getFullYear(),
+      now.getMonth() + 1,
+    );
+
+    // Tháng trước
+    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const spentLastMonth = await this.transactionService.getMonthlySpent(
+      userId,
+      lastMonthDate.getFullYear(),
+      lastMonthDate.getMonth() + 1,
+    );
+
+    return { spentThisMonth, spentLastMonth };
   }
 
   @Get(':id')

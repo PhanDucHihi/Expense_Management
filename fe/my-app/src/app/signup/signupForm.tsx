@@ -20,6 +20,7 @@ export default function SignUpForm() {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -66,6 +67,11 @@ export default function SignUpForm() {
               <InputWithLabel<signupType>
                 nameInSchema="password"
                 fieldTitle="Password"
+                type="password"
+              />
+              <InputWithLabel<signupType>
+                nameInSchema="confirmPassword"
+                fieldTitle="ConfirmPassword"
                 type="password"
               />
 
