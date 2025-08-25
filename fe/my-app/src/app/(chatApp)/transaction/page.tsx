@@ -1,14 +1,10 @@
-import { Button } from "@/components/ui/button";
 import TransactionTale from "./(table)/page";
+import Header from "../header";
 
 export default function Transaction() {
   return (
-    <div className="p-5">
-      <div className="flex justify-end mb-4">
-        <Button className="cursor-pointer" variant="destructive">
-          Thêm giao dịch
-        </Button>
-      </div>
+    <div className="p-5 space-y-5">
+      <Header title="Thêm mới giao dịch"/>
       <TransactionTale />
     </div>
   );

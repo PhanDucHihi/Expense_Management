@@ -21,9 +21,22 @@ export default function Header() {
         {/* Logo */}
         <Link
           href="/"
-          className="text-xl font-bold text-blue-600 dark:text-blue-400"
+          className="text-xl font-bold text-blue-600 dark:text-blue-400 flex items-center"
         >
-          MyWebsite
+          <div className="w-16 h-16 rounded-full overflow-hidden ">
+            <Image
+              src="/images/logo.jpg"
+              alt="Logo"
+              width={64}
+              height={64}
+              className="object-cover"
+              priority
+            />
+          </div>
+          {/* Nếu muốn text tên kèm logo */}
+          <span className="ml-3 text-xl font-bold text-blue-600 dark:text-blue-400">
+            Quản lí chi tiêu
+          </span>
         </Link>
 
         {/* Desktop Menu */}
