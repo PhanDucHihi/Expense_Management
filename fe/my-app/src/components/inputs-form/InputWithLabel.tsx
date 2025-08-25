@@ -12,12 +12,14 @@ type Props<S> = {
   nameInSchema: keyof S & string;
   fieldTitle: string;
   type?: string;
+  typeValue?: string;
 };
 
 export default function InputWithLabel<S>({
   nameInSchema,
   fieldTitle,
   type,
+  typeValue,
 }: Props<S>) {
   const form = useFormContext();
 
@@ -36,6 +38,17 @@ export default function InputWithLabel<S>({
                 type={type}
                 placeholder={`Enter ${fieldTitle}`}
                 {...field}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // Chỉ cho phép nhập số
+                  if (typeValue === "number") {
+                    if (/^\d*$/.test(val)) {
+                      field.onChange(val === "" ? 0 : Number(val));
+                    }
+                  } else {
+                    field.onChange(val);
+                  }
+                }}
               />
             </FormControl>
             <FormMessage />

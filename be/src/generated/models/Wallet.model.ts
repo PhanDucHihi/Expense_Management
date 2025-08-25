@@ -21,9 +21,6 @@ export class Wallet {
     balance!: Prisma.Decimal;
 
     @IsOptional()
-    startAmount?: Prisma.Decimal;
-
-    @IsOptional()
     targetAmount?: Prisma.Decimal;
 
     @IsOptional()

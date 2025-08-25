@@ -20,9 +20,9 @@ export class CreateWalletDto {
   @IsNumber()
   balance: number;
 
-  @ValidateIf((o: CreateWalletDto) => o.type === Wallettype.GOAL)
-  @IsNumber()
-  startAmount?: number;
+  // @ValidateIf((o: CreateWalletDto) => o.type === Wallettype.GOAL)
+  // @IsNumber()
+  // startAmount?: number;
 
   @ValidateIf((o: CreateWalletDto) => o.type === Wallettype.GOAL)
   @IsNumber()

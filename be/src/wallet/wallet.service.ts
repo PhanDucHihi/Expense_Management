@@ -18,8 +18,8 @@ export class WalletService {
           createWalletDto.type === 'GOAL' && createWalletDto.deadline
             ? new Date(createWalletDto.deadline)
             : null,
-        startAmount:
-          createWalletDto.type === 'GOAL' ? createWalletDto.startAmount : null,
+        // startAmount:
+        //   createWalletDto.type === 'GOAL' ? createWalletDto.startAmount : null,
         targetAmount:
           createWalletDto.type === 'GOAL' ? createWalletDto.targetAmount : null,
       },

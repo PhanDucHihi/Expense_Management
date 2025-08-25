@@ -3,7 +3,6 @@ export type Wallet = {
   name: string;
   balance: number;
   type: WalletType;
-  startAmount?: number;
   targetAmount?: number;
   deadline?: string;
   userId: number;

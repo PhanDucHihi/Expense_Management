@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:3000', // Frontend
     credentials: true, // CHÍNH TẢ đúng
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
   const httpAdapterHost = app.get(HttpAdapterHost);

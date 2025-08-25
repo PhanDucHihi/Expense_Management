@@ -69,7 +69,7 @@ model Wallet {
   name String
   type Wallettype @default(BASIS)
   balance Decimal @default(0) @db.Decimal(15,2)
-  startAmount Decimal? @db.Decimal(15,2)
+  // startAmount Decimal? @db.Decimal(15,2)
   targetAmount Decimal? @db.Decimal(15,2)
   deadline DateTime? 
 
