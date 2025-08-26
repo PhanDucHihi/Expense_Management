@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -202,8 +206,26 @@ export class TransactionService {
     return transaction;
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(userId: number, id: number, dto: UpdateTransactionDto) {
+    const tran = await this.prisma.transaction.findUnique({
+      where: { id },
+      include: { wallet: true },
+    });
+
+    if (!tran || tran.wallet.userId !== userId) {
+      throw new ForbiddenException('Bạn không có quyền sửa giao dịch này');
+    }
+
+    // Cập nhật
+    return this.prisma.transaction.update({
+      where: { id },
+      data: {
+        ...dto,
+        transaction_date: dto.transaction_date
+          ? new Date(dto.transaction_date) // "2025-08-26" -> Date("2025-08-26T00:00:00.000Z")
+          : undefined,
+      },
+    });
   }
 
   async remove(userId: number, transactionId: number) {

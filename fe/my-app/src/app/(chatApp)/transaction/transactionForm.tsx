@@ -33,7 +33,14 @@ export default function TransactionForm({ onSuccess, initalData }: Props) {
   const form = useForm({
     resolver: zodResolver(transactionSchema),
     defaultValues: initalData
-      ? { ...initalData }
+      ? {
+          ...initalData,
+          transaction_date: format(
+            new Date(initalData.transaction_date),
+            "yyyy-MM-dd"
+          ),
+          amount: Number(initalData.amount),
+        }
       : {
           walletId: currentWallet?.id ?? undefined,
           amount: 0,
@@ -66,10 +73,14 @@ export default function TransactionForm({ onSuccess, initalData }: Props) {
           `/transaction/${initalData.id}`,
           data
         );
+        console.log("Edit");
+
         return res.data;
       } else {
         // create
         const res = await apiPrivate.post("/transaction", data);
+        console.log("Create");
+
         return res.data;
       }
     },
@@ -85,6 +96,11 @@ export default function TransactionForm({ onSuccess, initalData }: Props) {
       );
       onSuccess();
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      if (initalData) {
+        queryClient.invalidateQueries({
+          queryKey: ["transaction", initalData.id],
+        });
+      }
     },
   });
 
@@ -133,8 +149,14 @@ export default function TransactionForm({ onSuccess, initalData }: Props) {
           type="date"
         />
 
-        <div className="flex justify-end">
-          <Button type="submit">Lưu</Button>
+        <div className="flex justify-center">
+          <Button
+            className="max-w-sm w-full cursor-pointer"
+            disabled={isPending}
+            type="submit"
+          >
+            Lưu
+          </Button>
         </div>
       </form>
     </Form>

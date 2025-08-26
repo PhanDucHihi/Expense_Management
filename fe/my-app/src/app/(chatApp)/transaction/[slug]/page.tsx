@@ -12,6 +12,14 @@ import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import TransactionForm from "../transactionForm";
+import BackButton from "@/components/back-button";
 
 export default function TransactionDetailPage({
   params,
@@ -22,9 +30,10 @@ export default function TransactionDetailPage({
   const router = useRouter();
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   //   const [openFormDialog, setOpenFormDialog] = useState(false);
   const { data, isLoading } = useQuery({
-    queryKey: ["transaction"],
+    queryKey: ["transaction", Number(slug)],
     queryFn: async () => {
       const res = await getTransaction(Number(slug));
       return res;
@@ -54,20 +63,23 @@ export default function TransactionDetailPage({
 
   return (
     <>
+      <div className="px-5">
+        <BackButton />
+      </div>
       <div className="flex items-center justify-center min-h-[calc(100vh-128px)] bg-background ">
         <div className="relative bg-card w-full max-w-lg space-y-6 py-6 px-6 rounded-2xl shadow-lg">
           <div className="absolute top-4 right-4 flex items-center gap-3">
             <Button
               className="p-2 rounded-full hover:bg-muted transition cursor-pointer"
               aria-label="Edit transaction"
-              onClick={() => console.log("Edit", data.id)}
+              onClick={() => setOpenEditDialog(true)}
             >
               <Pencil className="w-5 h-5 text-blue-500" />
             </Button>
             <Button
               className="p-2 rounded-full hover:bg-muted transition cursor-pointer"
               aria-label="Delete transaction"
-              onClick={(e) => {
+              onClick={() => {
                 setOpenDialog(true);
               }}
             >
@@ -137,6 +149,23 @@ export default function TransactionDetailPage({
           deleteTran();
         }}
       />
+
+      {/* Edit giao dich */}
+      <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa giao dịch</DialogTitle>
+          </DialogHeader>
+
+          <TransactionForm
+            initalData={data} // truyền dữ liệu hiện tại
+            onSuccess={() => {
+              setOpenEditDialog(false);
+              //   router.refresh(); // refresh lại trang detail
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

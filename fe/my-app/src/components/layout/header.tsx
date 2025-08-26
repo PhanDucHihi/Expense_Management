@@ -35,7 +35,7 @@ export default function Header() {
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo */}
         <Link
-          href="/"
+          href="/home"
           className="text-xl font-bold text-blue-600 dark:text-blue-400 flex items-center"
         >
           <div className="w-16 h-16 rounded-full overflow-hidden ">

@@ -89,10 +89,15 @@ export class TransactionController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.transactionService.update(+id, updateTransactionDto);
+    return this.transactionService.update(
+      req.user.sub,
+      id,
+      updateTransactionDto,
+    );
   }
 
   @Delete(':id')

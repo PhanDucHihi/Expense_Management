@@ -24,10 +24,12 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => (
       <span
         className={
-          row.original.type === "EXPENSE" ? "text-red-500" : "text-green-500"
+          row.original.category.type === "EXPENSE"
+            ? "text-red-500"
+            : "text-green-500"
         }
       >
-        {row.original.type}
+        {row.original.category.type}
       </span>
     ),
   },
