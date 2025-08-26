@@ -12,3 +12,12 @@ export const getTransactionsByMonth = async (
   );
   return res.data;
 };
+
+export const getTransaction = async (id: number): Promise<Transaction> => {
+  const res = await apiPrivate.get(`/transaction/${id}`);
+  return res.data;
+};
+
+export const deleteTransaction = async (id: number): Promise<void> => {
+  await apiPrivate.delete(`/transaction/${id}`);
+};

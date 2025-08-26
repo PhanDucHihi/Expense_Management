@@ -66,4 +66,17 @@ export class AuthController {
 
     return { accessToken, user };
   }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    // Xoá cookie refreshToken
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
+
+    return { message: 'Logout thành công' };
+  }
 }

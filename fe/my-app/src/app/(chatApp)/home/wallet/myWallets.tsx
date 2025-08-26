@@ -144,7 +144,8 @@ export default function MyWallets() {
           ))}
         </div>
       </div>
-
+      
+      {/* xoa vi */}
       <ConfirmDialog
         title="Xác nhận xóa ví"
         description={`Bạn có chắc chắn muốn xóa ví "${walletToDelete?.name}" không?`}

@@ -8,15 +8,30 @@ import { navLinks } from "@/constants";
 import { ModeToggle } from "../mode-toggle";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
+import AvatarDropdown from "./AvatarDropdown";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { apiPrivate } from "@/lib/api";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   // const accessToken = useAuthStore((state) => state.accessToken);
   const user = useAuthStore((state) => state.user);
+  const route = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await apiPrivate.post("/auth/logout"); // credentials: true nếu cần
+      toast.success("Logout thành công");
+      route.push("/login");
+    } catch {
+      toast.error("Logout thất bại");
+    }
+  };
 
   return (
-    <header className="bg-white shadow-md dark:bg-gray-900 mb-5">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md dark:bg-gray-900">
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo */}
         <Link
@@ -52,12 +67,10 @@ export default function Header() {
             </Link>
           ))}
 
-          <Image
-            src={user?.imageUrl ?? "/images/default-avatar.png"}
-            alt={user?.name ?? "User avatar"}
-            width={50}
-            height={50}
-            className="object-cover rounded-full"
+          <AvatarDropdown
+            user={user!}
+            onLogout={() => handleLogout()}
+            onSettings={() => console.log("Settings clicked")}
           />
 
           <ModeToggle />

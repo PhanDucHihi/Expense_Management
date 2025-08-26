@@ -74,6 +74,24 @@ async function main() {
     },
   ];
 
+  const incomeCategories = [
+    { name: 'Lương', icon: '💵' },
+    { name: 'Thu lãi', icon: '🏦' },
+    { name: 'Thu nhập khác', icon: '💰' },
+  ];
+
+  for (const category of incomeCategories) {
+    await prisma.category.upsert({
+      where: { name: category.name },
+      update: {},
+      create: {
+        name: category.name,
+        type: 'INCOME',
+        icon: category.icon,
+      },
+    });
+  }
+
   // Vòng lặp tạo hoặc cập nhật category
   for (const category of categories) {
     // Upsert cha

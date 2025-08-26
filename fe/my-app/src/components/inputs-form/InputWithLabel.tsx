@@ -13,6 +13,7 @@ type Props<S> = {
   fieldTitle: string;
   type?: string;
   typeValue?: string;
+  className?: string;
 };
 
 export default function InputWithLabel<S>({
@@ -20,6 +21,7 @@ export default function InputWithLabel<S>({
   fieldTitle,
   type,
   typeValue,
+  className,
 }: Props<S>) {
   const form = useFormContext();
 
@@ -35,6 +37,7 @@ export default function InputWithLabel<S>({
             <FormLabel>{fieldTitle}</FormLabel>
             <FormControl>
               <Input
+                className={className}
                 type={type}
                 placeholder={`Enter ${fieldTitle}`}
                 {...field}

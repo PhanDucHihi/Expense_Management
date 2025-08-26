@@ -22,11 +22,12 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getAllWallet } from "@/utils/apis/walletApi";
 
 export default function TransactionTable() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { currentWallet } = useWalletStore();
+  const { currentWallet, setCurrentWallet } = useWalletStore();
 
   const monthParam = searchParams.get("month");
   const yearParam = searchParams.get("year");
@@ -40,7 +41,7 @@ export default function TransactionTable() {
 
   // Frontend pagination
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(8);
 
   const walletId = currentWallet?.id;
 
@@ -69,6 +70,13 @@ export default function TransactionTable() {
     enabled: !!walletId,
   });
 
+  const { data: wallets, isLoading: walletsLoading } = useQuery({
+    queryKey: ["wallets"],
+    queryFn: async () => {
+      return await getAllWallet();
+    },
+  });
+
   const total = transactionsAll?.length ?? 0;
   const totalPages = Math.ceil(total / pageSize);
 
@@ -90,10 +98,32 @@ export default function TransactionTable() {
   if (isLoading) return <p className="text-center">Loading...</p>;
 
   return (
-    <div className="">
-      <h1 className="text-xl font-bold mb-4">
-        Transactions for {currentWallet.name}
-      </h1>
+    <div className="space-y-4">
+      <div className="flex gap-4 items-center">
+        <p className="text-xl font-bold">Chọn ví:</p>
+        {walletsLoading ? (
+          <p>Loading wallets...</p>
+        ) : (
+          <Select
+            value={currentWallet?.id.toString() ?? ""}
+            onValueChange={(val) => {
+              const selected = wallets?.find((w) => w.id.toString() === val);
+              if (selected) setCurrentWallet(selected); // setCurrentWallet từ store
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select wallet" />
+            </SelectTrigger>
+            <SelectContent>
+              {wallets?.map((wallet) => (
+                <SelectItem key={wallet.id} value={wallet.id.toString()}>
+                  {wallet.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
 
       <div className="flex gap-2 mb-4">
         <Select
@@ -140,7 +170,14 @@ export default function TransactionTable() {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-700">
+            <tr
+              key={row.id}
+              className="hover:bg-gray-700"
+              onClick={() => {
+                const transactionId = row.original.id; // 👈 lấy id từ dữ liệu gốc
+                router.push(`/transaction/${transactionId}`);
+              }}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="border p-2">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
