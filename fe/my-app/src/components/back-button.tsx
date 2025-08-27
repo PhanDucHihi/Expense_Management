@@ -21,7 +21,7 @@ export default function BackButton({
 
   return (
     <Button
-      variant="outline"
+      variant={"default"}
       onClick={handleBack}
       className={`flex items-center gap-2 ${className ?? ""} cursor-pointer`}
     >

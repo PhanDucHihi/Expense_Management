@@ -31,7 +31,7 @@ export default function TransactionDetailPage({
 
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  //   const [openFormDialog, setOpenFormDialog] = useState(false);
+
   const { data, isLoading } = useQuery({
     queryKey: ["transaction", Number(slug)],
     queryFn: async () => {

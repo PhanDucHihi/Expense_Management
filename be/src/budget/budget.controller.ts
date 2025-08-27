@@ -8,6 +8,7 @@ import {
   Delete,
   Req,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { BudgetService } from './budget.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
@@ -19,11 +20,19 @@ export class BudgetController {
   constructor(private readonly budgetService: BudgetService) {}
 
   @Post()
-  create(
+  async create(
     @Req() req: AuthenticatedRequest,
     @Body() createBudgetDto: CreateBudgetDto,
+    @Query('force') force?: string,
   ) {
-    return this.budgetService.create(req.user.sub, createBudgetDto);
+    const forceFlag = force === 'true';
+    const result = await this.budgetService.create(
+      req.user.sub,
+      createBudgetDto,
+      forceFlag,
+    );
+
+    return result;
   }
 
   // @Get()
@@ -31,6 +40,21 @@ export class BudgetController {
   //   return this.budgetService.findAll();
   //d
   // }
+
+  @Get('month/:walletId')
+  findByMonth(
+    @Req() req: AuthenticatedRequest,
+    @Param('walletId', ParseIntPipe) walletId: number,
+    @Query('year') year: string,
+    @Query('month') month: string,
+  ) {
+    return this.budgetService.findByMonth(
+      req.user.sub,
+      walletId,
+      Number(year),
+      Number(month),
+    );
+  }
 
   @Get(':id')
   findOne(

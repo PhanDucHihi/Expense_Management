@@ -58,7 +58,7 @@ export default function SignUpForm() {
             >
               <InputWithLabel<signupType>
                 nameInSchema="name"
-                fieldTitle="Name"
+                fieldTitle="Tên người dùng"
               />
               <InputWithLabel<signupType>
                 nameInSchema="email"
@@ -66,12 +66,12 @@ export default function SignUpForm() {
               />
               <InputWithLabel<signupType>
                 nameInSchema="password"
-                fieldTitle="Password"
+                fieldTitle="Mật khẩu"
                 type="password"
               />
               <InputWithLabel<signupType>
                 nameInSchema="confirmPassword"
-                fieldTitle="ConfirmPassword"
+                fieldTitle="Xác nhận mật khẩu"
                 type="password"
               />
 

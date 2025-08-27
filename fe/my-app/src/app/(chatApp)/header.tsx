@@ -13,6 +13,7 @@ import BackButton from "@/components/back-button";
 import { WalletType } from "@/types/wallet";
 import WalletForm from "./home/wallet/walletForm";
 import TransactionForm from "./transaction/transactionForm";
+import BudgetForm from "./budget/budgetForm";
 
 export enum ActionType {
   WALLET = "wallet",
@@ -109,6 +110,11 @@ export default function Header({ title, actionType }: Props) {
               <DialogTitle>Tạo ngân sách</DialogTitle>
             </DialogHeader>
             {/* Form budget */}
+            <BudgetForm
+              onSuccess={() => {
+                setOpen(false);
+              }}
+            />
           </>
         );
       default:

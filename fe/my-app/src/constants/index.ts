@@ -1,8 +1,8 @@
 import { House, CreditCard, WalletCards } from "lucide-react";
 
 export const navLinks = [
-  { href: "/home", label: "Home", icon: House },
-  { href: "/transaction", label: "Transactions", icon: CreditCard },
-  { href: "/budget", label: "Budgets", icon: WalletCards },
+  { href: "/home", label: "Tổng quan", icon: House },
+  { href: "/transaction", label: "Sổ giao dịch", icon: CreditCard },
+  { href: "/budget", label: "Ngân sách", icon: WalletCards },
   // { href: "/acount", label: "" },
 ];

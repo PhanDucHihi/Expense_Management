@@ -92,7 +92,7 @@ export default function LoginForm() {
             />
             <InputWithLabel<loginType>
               nameInSchema="password"
-              fieldTitle="Password"
+              fieldTitle="Mật khẩu"
               type="password"
             />
             <Button
