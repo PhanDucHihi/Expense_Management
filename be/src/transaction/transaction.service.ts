@@ -267,4 +267,36 @@ export class TransactionService {
 
     return { message: 'Transaction deleted successfully', balance: newBalance };
   }
+
+  // tìm kiếm tracsaction
+  async searchTransactions(userId: number, keyword: string) {
+    return this.prisma.transaction.findMany({
+      where: {
+        userId,
+        OR: [
+          {
+            category: {
+              name: {
+                contains: keyword,
+                mode: 'insensitive', // không phân biệt hoa thường
+              },
+            },
+          },
+          {
+            note: {
+              contains: keyword,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+      include: {
+        wallet: true,
+        category: true,
+      },
+      orderBy: {
+        transaction_date: 'desc',
+      },
+    });
+  }
 }

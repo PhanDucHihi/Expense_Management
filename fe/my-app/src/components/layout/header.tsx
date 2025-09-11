@@ -12,6 +12,7 @@ import AvatarDropdown from "./AvatarDropdown";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { apiPrivate } from "@/lib/api";
+import SearchBar from "../SearchBar";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +55,8 @@ export default function Header() {
             Quản lí chi tiêu
           </span>
         </Link>
+
+        <SearchBar />
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-6 items-center">

@@ -34,6 +34,14 @@ export class TransactionController {
     return this.transactionService.findRecentTransactions(userId);
   }
 
+  @Get('/search')
+  searchTransactions(
+    @Req() req: AuthenticatedRequest,
+    @Query('keyword') keyword: string,
+  ) {
+    return this.transactionService.searchTransactions(req.user.sub, keyword);
+  }
+
   @Get()
   findAll(@Req() req: AuthenticatedRequest) {
     return this.transactionService.findAll(req.user.sub);
