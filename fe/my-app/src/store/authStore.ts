@@ -2,7 +2,7 @@ import { User } from "@/types/user";
 import { create } from "zustand";
 type AuthState = {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
   accessToken: string | null;
   setAccessToken: (token: string | null) => void;
 };

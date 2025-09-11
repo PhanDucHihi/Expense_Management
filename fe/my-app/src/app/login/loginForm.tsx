@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -17,29 +16,17 @@ import { useEffect } from "react";
 import Loading from "@/components/loading";
 
 export default function LoginForm() {
-  // const accessToken = useAuthStore((state) => state.accessToken);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setUser = useAuthStore((state) => state.setUser);
 
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await api.post("/auth/refresh-token");
-        console.log(res);
-
-        if (res.data.accessToken) {
-          setAccessToken(res.data.accessToken);
-          setUser(res.data.user);
-          router.push("/home");
-        }
-      } catch {
-        // không làm gì, ở lại login
-      }
-    };
-    checkAuth();
-  }, []);
+    if (accessToken) {
+      router.replace("/home"); // nếu đã login thì chuyển hướng sang home
+    }
+  }, [accessToken, router]);
 
   const form = useForm<loginType>({
     resolver: zodResolver(loginSchema),
@@ -75,6 +62,10 @@ export default function LoginForm() {
     mutate(values);
     // TODO: Gọi API đăng nhập
   };
+
+  if (accessToken) {
+    return null; // tránh render form login trong lúc redirect
+  }
 
   return (
     <div

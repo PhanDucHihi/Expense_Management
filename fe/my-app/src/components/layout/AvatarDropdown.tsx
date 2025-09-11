@@ -9,31 +9,58 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "@/types/user";
+import { User as UserIcon, LogOut, Wallet, Repeat } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   user: User;
   onLogout: () => void;
-  onSettings: () => void;
+  onRecurring?: () => void;
 };
 
-export default function AvatarDropdown({ user, onLogout, onSettings }: Props) {
+export default function AvatarDropdown({ user, onLogout, onRecurring }: Props) {
+  const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="focus:outline-none">
-          <Image
-            src={user?.imageUrl ?? "/images/default-avatar.png"}
-            alt={user?.name ?? "User avatar"}
-            width={50}
-            height={50}
-            className="object-cover rounded-full cursor-pointer"
-          />
+          <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
+            <Image
+              src={user?.imageUrl ?? "/images/default-avatar.png"}
+              alt={user?.name ?? "User avatar"}
+              width={60}
+              height={60}
+              className="object-cover cursor-pointer"
+            />
+          </div>
         </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem onClick={onSettings}>Cài đặt</DropdownMenuItem>
-        <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/home/wallet");
+          }}
+        >
+          <Wallet className="mr-2 h-4 w-4" />
+          <span>Ví của tôi</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onRecurring}>
+          <Repeat className="mr-2 h-4 w-4" />
+          <span>Giao dịch định kì</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/profile");
+          }}
+        >
+          <UserIcon className="mr-2 h-4 w-4" />
+          <span>Cập nhật trang cá nhân</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Logout</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

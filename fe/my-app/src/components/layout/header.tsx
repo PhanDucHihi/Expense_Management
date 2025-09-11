@@ -16,13 +16,14 @@ import { apiPrivate } from "@/lib/api";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccesstoken = useAuthStore((state) => state.setAccessToken);
   const user = useAuthStore((state) => state.user);
   const route = useRouter();
 
   const handleLogout = async () => {
     try {
-      await apiPrivate.post("/auth/logout"); // credentials: true nếu cần
+      await apiPrivate.post("/auth/logout");
+      setAccesstoken(null); // credentials: true nếu cần
       toast.success("Logout thành công");
       route.push("/login");
     } catch {
@@ -67,11 +68,7 @@ export default function Header() {
             </Link>
           ))}
 
-          <AvatarDropdown
-            user={user!}
-            onLogout={() => handleLogout()}
-            onSettings={() => console.log("Settings clicked")}
-          />
+          <AvatarDropdown user={user!} onLogout={() => handleLogout()} />
 
           <ModeToggle />
         </nav>
