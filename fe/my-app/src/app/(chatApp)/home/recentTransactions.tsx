@@ -16,7 +16,7 @@ export default function RecentTransactions() {
   return (
     <div className="max-w-xl w-full space-y-2">
       <div className="flex justify-between">
-        <span className="text-gray-300">Recent transactions</span>
+        <span className="text-gray-300">Giao dịch gần đây</span>
         <p className="text-green-600 text-center cursor-pointer">See all</p>
       </div>
       <div className="bg-card rounded-2xl p-2">

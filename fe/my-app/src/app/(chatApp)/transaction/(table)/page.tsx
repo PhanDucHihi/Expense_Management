@@ -100,7 +100,6 @@ export default function TransactionTable() {
   return (
     <div className="space-y-4">
       <div className="flex gap-4 items-center">
-        <p className="text-xl font-bold">Chọn ví:</p>
         {walletsLoading ? (
           <p>Loading wallets...</p>
         ) : (
@@ -123,9 +122,7 @@ export default function TransactionTable() {
             </SelectContent>
           </Select>
         )}
-      </div>
 
-      <div className="flex gap-2 mb-4">
         <Select
           value={month.toString()}
           onValueChange={(val) => onMonthChange(Number(val))}
@@ -150,6 +147,32 @@ export default function TransactionTable() {
           className="w-28"
         />
       </div>
+
+      {/* <div className="flex gap-2 mb-4">
+        <Select
+          value={month.toString()}
+          onValueChange={(val) => onMonthChange(Number(val))}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="Select month" />
+          </SelectTrigger>
+          <SelectContent>
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+              <SelectItem key={m} value={m.toString()}>
+                Month {m}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Input
+          type="number"
+          value={year}
+          onChange={(e) => onYearChange(Number(e.target.value))}
+          placeholder="Year"
+          className="w-28"
+        />
+      </div> */}
 
       <table className="w-full border border-gray-200 bg-card">
         <thead>

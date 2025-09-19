@@ -42,8 +42,8 @@ export default function MonthReport() {
     );
 
   const data = [
-    { month: "Last Month", spent: report.spentLastMonth },
-    { month: "This Month", spent: report.spentThisMonth },
+    { month: "Tháng trước", spent: report.spentLastMonth },
+    { month: "Tháng này", spent: report.spentThisMonth },
   ];
 
   const chartConfig = {
@@ -56,8 +56,8 @@ export default function MonthReport() {
   return (
     <Card className="max-w-xl w-full">
       <CardHeader>
-        <CardTitle>Monthly Spending</CardTitle>
-        <CardDescription>Comparison: This Month vs Last Month</CardDescription>
+        <CardTitle>Chi tiêu hàng tháng</CardTitle>
+        <CardDescription>So sánh: tháng này vs tháng trước</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -87,12 +87,12 @@ export default function MonthReport() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 leading-none font-medium">
-          Trending up by{" "}
-          {(report.spentThisMonth - report.spentLastMonth).toFixed(2)} this
-          month <TrendingUp className="h-4 w-4" />
+          Chi tiêu tăng thêm{" "}
+          {(report.spentThisMonth - report.spentLastMonth).toFixed(2)} trong
+          tháng này <TrendingUp className="h-4 w-4" />
         </div>
         <div className="text-muted-foreground leading-none">
-          Showing spending for the last 2 months
+          Hiển thị chi tiêu trong 2 tháng qua
         </div>
       </CardFooter>
     </Card>

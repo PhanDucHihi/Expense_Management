@@ -9,6 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const search = useTransitionStore((state) => state.search);
   const setSearch = useTransitionStore((state) => state.setSearch);
   const pathname = usePathname();
+  console.log(pathname);
 
   useEffect(() => {
     setSearch("");
@@ -18,7 +19,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <div>
         <Header />
-        <main className="pt-32">
+        <main className="pt-32 relative ">
+          {/* <div
+            className="absolute inset-0 bg-cover bg-center -z-10 blur-xs min-h-screen"
+            style={{ backgroundImage: "url('/images/background-main.jpg')" }}
+          ></div> */}
           {search === "" ? <>{children}</> : <SearchResults />}
         </main>
       </div>
