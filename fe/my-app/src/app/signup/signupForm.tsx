@@ -25,7 +25,7 @@ export default function SignUpForm() {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: signupType) => {
+    mutationFn: async (data: Omit<signupType, "confirmPassword">) => {
       const res = await api.post("/user", data);
       console.log(res);
       return res.data;
@@ -39,7 +39,9 @@ export default function SignUpForm() {
   });
 
   const handleSignup = (values: signupType) => {
-    mutate(values);
+    const { confirmPassword, ...rest } = values;
+    console.log(confirmPassword);
+    mutate(rest);
   };
 
   return (
