@@ -73,21 +73,21 @@ export default function BudgetCardCompact({ budget }: Props) {
           <div className="flex gap-2">
             <p className="text-gray-400 dark:text-gray-300">Ngân sách:</p>
             <p className="font-bold text-gray-900 dark:text-white">
-              {budget.amount_limit.toLocaleString()} đ
+              {Number(budget.amount_limit).toLocaleString()} đ
             </p>
           </div>
 
           <div className="flex gap-2">
             <p className="text-gray-400 dark:text-gray-300">Đã chi:</p>
             <p className="text-red-500 font-medium">
-              {budget.spent.toLocaleString()} đ
+              {Number(budget.spent).toLocaleString()} đ
             </p>
           </div>
 
           <p className="text-gray-500 dark:text-gray-300">
             Còn lại:{" "}
             <span className="font-medium text-gray-800 dark:text-gray-300">
-              {budget.remaining.toLocaleString()} đ
+              {Number(budget.remaining).toLocaleString()} đ
             </span>
           </p>
         </div>
