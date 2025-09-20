@@ -74,7 +74,7 @@ export default function WalletList() {
             </div>
 
             <div>{wallet.type}</div>
-            <div>{wallet.balance} Đ</div>
+            <div>{Number(wallet.balance).toLocaleString()} Đ</div>
           </div>
         ))}
       </div>
