@@ -4,12 +4,12 @@ import axios from "axios";
 import { error } from "console";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE,
   withCredentials: true,
 });
 
 export const apiPrivate = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE,
   withCredentials: true,
 });
 
