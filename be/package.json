@@ -8,9 +8,6 @@
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
-  "engines": {
-  "node": "21.x"
-  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
